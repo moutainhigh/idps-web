@@ -1,0 +1,19 @@
+/bin/
+/build/
+
+# Ignore Gradle GUI config
+gradle-app.setting
+
+# Cache of project
+.gradletasknamecache
+
+.classpath
+.project
+.gradle/
+.settings/
+bin/
+/cas.log
+.DS_Store
+.idea
+classes
+logs/

@@ -1,0 +1,85 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'war'
+apply plugin: 'eclipse-wtp'
+apply plugin: 'maven-publish'
+webAppDirName = 'src/main/webapp'
+
+compileJava.dependsOn clean
+
+sourceCompatibility = 1.8
+
+configurations.all {
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+    resolutionStrategy.cacheDynamicVersionsFor 0, 'seconds'
+}
+    
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+
+repositories {
+    maven{ url "http://localhost:8081/nexus/content/groups/public/"}
+}
+
+sourceSets {
+    main {
+        java { srcDirs = ['src/main/java']}
+        resources {
+            srcDirs = ['src/main/resources']
+        }
+    }
+}
+
+ext {
+	moduleName="iPaas-IDPS";
+	moduleVersion="1.0-SNAPSHOT"
+	//moduleVersion="0.3"
+	publishURL="http://localhost:8081/nexus/content/repositories/snapshots/"
+	builtBy="gradle 2.1" 
+} 
+
+group = 'com.ai'
+
+dependencies{
+    compile 'com.x:sdk:1.0.1-SNAPSHOT'
+
+	compile "jstl:jstl:1.2"
+	compile 'org.apache.zookeeper:zookeeper:3.5.5'
+	
+	compile "javax.servlet:javax.servlet-api:3.1.0"
+	compile "javax.servlet.jsp:javax.servlet.jsp-api:2.3.1"
+	
+	compile 'org.javassist:javassist:3.25.0-GA'
+
+	testCompile "junit:junit:4.11"
+	compile 'commons-fileupload:commons-fileupload:1.4'
+
+	compile "org.springframework:spring-web:5.1.8.RELEASE"
+	compile "org.springframework:spring-webmvc:5.1.8.RELEASE"
+	compile "org.springframework:spring-context-support:5.1.8.RELEASE"
+	compile ("com.alibaba:dubbox:2.8.4") {
+		exclude group: 'org.springframework', module: 'spring'
+	}
+}
+
+war {
+    baseName = "iPaaS-IDPS"
+}
+
+jar {
+    baseName moduleName
+    version moduleVersion
+	manifest {
+        attributes 'packageName': moduleName, 'Built-By': builtBy,'create-date': new Date().format('yyyy-MM-dd HH:mm:ss')
+    }
+}
+
+eclipse {
+    wtp {
+        facet {
+            facet name: 'java', version: '1.7'
+            facet name: 'jst.web', version: '3.0'
+            facet name: 'wst.jsdt.web', version: '1.0'
+        }
+    }
+}
+
